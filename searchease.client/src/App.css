@@ -1,11 +1,117 @@
-﻿#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
+.search-box {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.search-button {
+  padding: 0.8rem 1.5rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.search-button:hover {
+  background-color: #0052a3;
+}
+
+.loading-indicator {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.results {
+  margin-top: 2rem;
+}
+
+.result-item {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #0066cc;
+  margin: 0;
+}
+
+.file-path {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.file-meta {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.score {
+  background-color: #f0f7ff;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  color: #0066cc;
+  font-size: 0.9rem;
+}
+
+.snippets {
+  margin-top: 1rem;
+}
+
+.snippet {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.snippet b {
+  background-color: #fff3cd;
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
 }
