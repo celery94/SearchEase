@@ -4,8 +4,10 @@ using Lucene.Net.Index;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
 using Microsoft.Extensions.Options;
+using NPOI.XWPF.UserModel;
 using SearchEase.Server.Configuration;
 using Directory = System.IO.Directory;
+using Document = Lucene.Net.Documents.Document;
 
 namespace SearchEase.Server.Services;
 
@@ -76,6 +78,7 @@ public class LuceneIndexingService : BackgroundService
             {
                 var doc = await CreateDocumentAsync(file);
                 writer.AddDocument(doc);
+                _logger.LogInformation("Indexed file: {File}", file);
             }
             catch (Exception ex)
             {
@@ -96,10 +99,42 @@ public class LuceneIndexingService : BackgroundService
             new StringField("extension", Path.GetExtension(filePath).ToLowerInvariant(), Field.Store.YES),
         };
 
-        string content = await File.ReadAllTextAsync(filePath);
-        doc.Add(new TextField("content", content, Field.Store.NO));
+        string content = await ExtractContentAsync(filePath);
+        doc.Add(new TextField("content", content, Field.Store.YES));
 
         return doc;
+    }
+
+    private async Task<string> ExtractContentAsync(string filePath)
+    {
+        var extension = Path.GetExtension(filePath).ToLowerInvariant();
+
+        try
+        {
+            switch (extension)
+            {
+                case ".docx":
+                    using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        var document = new XWPFDocument(stream);
+                        var paragraphs = document.Paragraphs.Select(p => p.Text);
+                        var tables = document.Tables.SelectMany(table => 
+                            table.Rows.SelectMany(row => 
+                                row.GetTableCells().Select(cell => cell.GetText())));
+                        
+                        return string.Join("\n", paragraphs.Concat(tables));
+                    }
+
+                default:
+                    // For other file types (e.g., .txt, .pdf), just read the text
+                    return await File.ReadAllTextAsync(filePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error extracting content from file: {FilePath}", filePath);
+            return string.Empty; // Return empty string if content extraction fails
+        }
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
