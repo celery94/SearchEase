@@ -7,7 +7,11 @@ using Microsoft.Extensions.Options;
 using NPOI.XWPF.UserModel;
 using SearchEase.Server.Configuration;
 using System.Collections.Concurrent;
+using System.Text;
 using System.Text.Json;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Directory = System.IO.Directory;
 using Document = Lucene.Net.Documents.Document;
 
@@ -260,6 +264,22 @@ public class LuceneIndexingService : BackgroundService
 
                         return string.Join("\n", paragraphs.Concat(tables));
                     }
+
+                case ".pdf":
+                    var content = new StringBuilder();
+                    using (var pdfReader = new PdfReader(filePath))
+                    using (var pdfDocument = new PdfDocument(pdfReader))
+                    {
+                        var pageCount = pdfDocument.GetNumberOfPages();
+                        for (int i = 1; i <= pageCount; i++)
+                        {
+                            var page = pdfDocument.GetPage(i);
+                            var strategy = new LocationTextExtractionStrategy();
+                            var pageText = PdfTextExtractor.GetTextFromPage(page, strategy);
+                            content.AppendLine(pageText);
+                        }
+                    }
+                    return content.ToString();
 
                 case ".txt":
                 case ".md":

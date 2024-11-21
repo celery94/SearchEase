@@ -26,6 +26,8 @@
 		<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
 		<PackageReference Include="Lucene.Net.Highlighter" Version="4.8.0-beta00016" />
 		<PackageReference Include="NPOI" Version="2.7.2" />
+		<PackageReference Include="itext7" Version="8.0.2" />
+		<PackageReference Include="itext7.commons" Version="8.0.2" />
 	</ItemGroup>
 
 </Project>
