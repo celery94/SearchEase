@@ -17,8 +17,8 @@ public class SearchService
     private readonly ILogger<SearchService> _logger;
     private readonly Directory _directory;
     private readonly StandardAnalyzer _analyzer;
+    private readonly int _maxSnippetLength;
     private const LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
-    private const int MaxSnippetLength = 150;
     private const int MaxFragments = 5;
 
     public class SearchResult
@@ -42,6 +42,7 @@ public class SearchService
         var indexPath = Path.Combine(AppContext.BaseDirectory, _config.IndexPath);
         _directory = FSDirectory.Open(indexPath);
         _analyzer = new StandardAnalyzer(AppLuceneVersion);
+        _maxSnippetLength = _config.MaxSnippetLength; // Add this line
     }
 
     public async Task<IEnumerable<SearchResult>> SearchAsync(string searchTerm, int maxResults = 10)
@@ -65,7 +66,7 @@ public class SearchService
             var formatter = new SimpleHTMLFormatter("<b>", "</b>");
             var highlighter = new Highlighter(formatter, scorer)
             {
-                TextFragmenter = new SimpleFragmenter(MaxSnippetLength)
+                TextFragmenter = new SimpleFragmenter(_maxSnippetLength) // Modify this line
             };
             highlighter.MaxDocCharsToAnalyze = 100000; // Increase max chars to analyze if needed
 
