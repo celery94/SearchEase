@@ -2,13 +2,12 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
+using Lucene.Net.Search.Highlight;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using Lucene.Net.Search.Highlight;
 using Microsoft.Extensions.Options;
 using SearchEase.Server.Configuration;
 using Directory = Lucene.Net.Store.Directory;
-using System.IO;
 
 namespace SearchEase.Server.Services;
 
@@ -85,18 +84,7 @@ public class SearchService
                 // If no highlighted fragments found or not enough, take sentences
                 if (fragments.Count == 0)
                 {
-                    fragments.AddRange(
-                        content.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(s => s.Trim())
-                            .Where(s => !string.IsNullOrWhiteSpace(s))
-                            .Take(MaxFragments)
-                            .Select(s => s + ".")
-                    );
-
-                    if (fragments.Count == 0 && !string.IsNullOrEmpty(content))
-                    {
-                        fragments.Add(content.Substring(0, Math.Min(content.Length, MaxSnippetLength)) + "...");
-                    }
+                    continue;
                 }
 
                 results.Add(new SearchResult

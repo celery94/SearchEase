@@ -1,6 +1,0 @@
-@SearchEase.Server_HostAddress = http://localhost:5173
-
-GET {{SearchEase.Server_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
