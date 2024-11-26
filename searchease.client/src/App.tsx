@@ -11,6 +11,15 @@ interface SearchResult {
   score: number;
 }
 
+// Add TypeScript interface for the electron API
+declare global {
+  interface Window {
+    electronAPI: {
+      openFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;
+    };
+  }
+}
+
 function App() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -63,6 +72,17 @@ function App() {
     return new Date(dateString).toLocaleString();
   };
 
+  const handleFilePathClick = async (filePath: string) => {
+    try {
+      const result = await window.electronAPI.openFile(filePath);
+      if (!result.success) {
+        console.error('Failed to open file:', result.error);
+      }
+    } catch (error) {
+      console.error('Error opening file:', error);
+    }
+  };
+
   return (
     <div className="container">
       <h1>SearchEase</h1>
@@ -84,7 +104,12 @@ function App() {
             <div className="result-header">
               <div className="file-info">
                 <h3 className="file-name">{result.fileName}</h3>
-                <p className="file-path">{result.filePath}</p>
+                <p className="file-path" 
+                  onClick={() => handleFilePathClick(result.filePath)}
+                  style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  {result.filePath}
+                </p>
                 <p className="file-meta">
                   {formatFileSize(result.fileSize)} • Last modified: {formatDate(result.lastModified)}
                 </p>

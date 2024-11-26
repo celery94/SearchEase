@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron/main')
+const { app, BrowserWindow, ipcMain, shell } = require('electron/main')
 const path = require('node:path')
 const { spawn } = require('child_process')
 const net = require('net')
@@ -35,7 +35,7 @@ function waitForPort(port) {
 function startServer() {
     let currentBinPath = path.join(__dirname, './bin');
 
-    serverProcess = spawn("SearchEase.Server.exe", [], {
+    serverProcess = spawn("SearchEase.Server", [], {
         cwd: currentBinPath,
     })
 
@@ -53,23 +53,36 @@ async function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: false,
+            contextIsolation: true
         },
         autoHideMenuBar: true,
         menuBarVisible: false
     })
 
     try {
-        await waitForPort(5000)
-        win.loadURL('http://localhost:5000')
+        await waitForPort(59176)
+        win.loadURL('https://localhost:59176')
     } catch (error) {
         console.error('Failed to connect to server:', error)
     }
 }
 
 app.whenReady().then(() => {
-    startServer()
+    //startServer()
     createWindow()
+
+    // Handle open-file IPC message
+    ipcMain.handle('open-file', async (_, filePath) => {
+        try {
+            await shell.openPath(filePath);
+            return { success: true };
+        } catch (error) {
+            console.error('Failed to open file:', error);
+            return { success: false, error: error.message };
+        }
+    });
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
