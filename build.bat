@@ -1,0 +1,1 @@
+dotnet publish ./SearchEase.Server -o ./searchease.app/bin -c Release --self-contained -p:PublishReadyToRun=true -r win-x64 -p:PublishSingleFile=true
