@@ -33,9 +33,10 @@ function waitForPort(port) {
 }
 
 function startServer() {
-    const serverPath = path.join(__dirname, './bin/SearchEase.Server.exe')
-    serverProcess = spawn(serverPath, [], {
-        cwd: __dirname + '/bin/',
+    let currentBinPath = path.join(__dirname, './bin');
+
+    serverProcess = spawn("SearchEase.Server.exe", [], {
+        cwd: currentBinPath,
     })
 
     serverProcess.stdout.on('data', (data) => {

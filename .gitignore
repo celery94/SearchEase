@@ -61,3 +61,5 @@ LuceneIndex/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+dist
