@@ -44,6 +44,9 @@ public class LuceneIndexingService : BackgroundService
         _indexTimesPath = Path.Combine(indexPath, "index_times.json");
         _fileIndexTimes = LoadIndexTimes();
 
+        // Expand environment variables in FolderToIndex
+        _config.FolderToIndex = Environment.ExpandEnvironmentVariables(_config.FolderToIndex);
+
         // Initialize file system watcher
         InitializeFileWatcher();
     }

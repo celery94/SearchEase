@@ -21,6 +21,7 @@
     "directories": {
       "output": "dist"
     },
+    "asar": false,
     "files": [
       "**/*",
       "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
@@ -34,15 +35,6 @@
       "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
       "!**/{appveyor.yml,.travis.yml,circle.yml}",
       "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
-    ],
-    "extraResources": [
-      {
-        "from": "./bin",
-        "to": "bin",
-        "filter": [
-          "**/*"
-        ]
-      }
     ],
     "win": {
       "target": "msi",
